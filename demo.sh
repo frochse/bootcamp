@@ -14,7 +14,7 @@ verwijdergebruiker() {
 }	
 
 
-if [ -z "${gebruiker}" ] || [ -z "${option}"];
+if [ -z "${gebruiker}" ] || [ -z "${option}" ]
 then
  echo "usage: sudo demo.sh <option - maakgebruiker|verwijdergebruiker> <gebruikersnaam>"
  exit 0
@@ -23,7 +23,7 @@ fi
 case $option in
 
   maakgebruiker)
-    echo  "maak gebruiker"
+    echo  "maak gebruiker" ${gebruiker}
     maakgebruiker ${gebruiker} 
     ;;
 
