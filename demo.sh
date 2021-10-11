@@ -1,7 +1,33 @@
-#!/bin/bash 
+#! /usr/bin/env bash 
 
-option="${1}"
-gebruiker="${2}"
+#
+# Author: Dennis in 't Groen <dgroen@virtualsciences.nl>
+#
+#/ Usage: SCRIPTNAME [OPTIONS]... [ARGUMENTS]...
+#/
+#/
+#/ OPTIONS
+#/ -h, --help
+#/ Print this help message
+#/
+#/ EXAMPLES
+#/
+ 
+ 
+#{{{ Bash settings
+# abort on nonzero exitstatus
+set -o errexit
+# abort on unbound variable
+set -o nounset
+# don't hide errors within pipes
+set -o pipefail
+#}}}
+#{{{ Variables
+readonly script_name=$(basename "${0}")
+readonly script_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+IFS=$'\t\n' # Split on newlines and tabs (but not on spaces)
+ 
+#}}}
 
 maakgebruiker() {
 	local user_arg=${1}
@@ -13,28 +39,44 @@ verwijdergebruiker() {
 	userdel ${user_arg}
 }	
 
+check_args(){
+ echo ${@}
+if [ "$#" -ne 2 ]; then
+  echo "usage: sudo demo.sh <option - maakgebruiker|verwijdergebruiker> <gebruikersnaam>"
+  exit 0
+ fi 
 
-if [ -z "${gebruiker}" ] || [ -z "${option}" ]
-then
- echo "usage: sudo demo.sh <option - maakgebruiker|verwijdergebruiker> <gebruikersnaam>"
- exit 0
-fi 
+} 
 
-case $option in
+main() {
 
-  maakgebruiker)
-    echo  "maak gebruiker" ${gebruiker}
-    maakgebruiker ${gebruiker} 
-    ;;
+check_args "${@}"
 
-  verwijdergebruiker)
-    echo  "verwijder gebruiker"
-    verwijdergebruiker ${gebruiker}
-    ;;
+local option="${1}"
+local gebruiker="${2}"
 
-  *)
-    echo "onbekende functie gebruik: maakgebruiker of verwijdergebruiker"
-    echo ""
-    ;;
-esac
+  case $option in
+
+    maakgebruiker)
+      echo  "maak gebruiker" ${gebruiker}
+      maakgebruiker ${gebruiker} 
+      ;;
+
+    verwijdergebruiker)
+      echo  "verwijder gebruiker"
+      verwijdergebruiker ${gebruiker}
+      ;;
+
+    *)
+      echo "onbekende functie gebruik: maakgebruiker of verwijdergebruiker"
+      echo ""
+      ;;
+  esac
+
+
+}
+ 
+
+main "${@}"
+ 
 
